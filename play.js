@@ -1,4 +1,4 @@
-const btnDescriptors = [
+const btnDescriptions = [
     { file: 'sound1.mp3', hue: 120 },
     { file: 'sound2.mp3', hue: 0 },
     { file: 'sound3.mp3', hue: 60 },
@@ -8,7 +8,7 @@ const btnDescriptors = [
 class Button {
     constructor(description, el) {
         this.el = el;
-        this.hue = descripton.hue;
+        this.hue = description.hue;
         this.sound = loadSound(description.file);
         this.paint(25);
     }
@@ -24,14 +24,14 @@ class Button {
         this.paint(25);
     }
 
-    // Work around Safari's rule to only play sounds if given permission.
-    async play(volume = 1.0) {
-        this.sound.volume = volume;
-        await new Promise((resolve) => {
-            this.sound.onended = resolve;
-            this.sound.play();
-        });
-    }
+  // Work around Safari's rule to only play sounds if given permission.
+  async play(volume = 1.0) {
+    this.sound.volume = volume;
+    await new Promise((resolve) => {
+      this.sound.onended = resolve;
+      this.sound.play();
+    });
+  }
 }
 
 class Game {
@@ -71,7 +71,7 @@ class Game {
                     this.updateScore(this.sequence.length - 1);
                     await this.playSequence();
                 }
-                this.allowPlayer = true;
+            this.allowPlayer = true;
             } else {
                 this.saveScore(this.sequence.length - 1);
                 this.mistakeSound.play();
@@ -93,7 +93,7 @@ class Game {
 
     getPlayerName() {
         return localStorage.getItem('userName') ?? 'Mystery player';
-    }
+      }
 
     async playSequence() {
         await delay(500);
@@ -104,8 +104,8 @@ class Game {
     }
 
     addButton() {
-        const scoreEl = document.querySelector('#score');
-        scoreEl.textContent = score;
+        const btn = this.getRandomButton();
+        this.sequence.push(btn);
     }
 
     updateScore(score) {
@@ -115,7 +115,7 @@ class Game {
 
     async buttonDance(laps = 1) {
         for (let step = 0; step < laps; step++) {
-            for (const brn of this.buttons.values()) {
+            for (const btn of this.buttons.values()) {
                 await btn.press(0.0);
             }
         }
@@ -123,7 +123,7 @@ class Game {
 
     getRandomButton() {
         let buttons = Array.from(this.buttons.values());
-        return buttons[Math.floor(Math.random() * this.buttons.size)]
+        return buttons[Math.floor(Math.random() * this.buttons.size)];
     }
 
     saveScore(score) {
@@ -134,14 +134,14 @@ class Game {
             scores = JSON.parse(scoresText);
         }
         scores = this.updateScores(userName, score, scores);
-
+    
         localStorage.setItem('scores', JSON.stringify(scores));
     }
 
     updateScores(userName, score, scores) {
         const date = new Date().toLocaleDateString();
         const newScore = { name: userName, score: score, date: date };
-
+    
         let found = false;
         for (const [i, prevScore] of scores.entries()) {
             if (score > prevScore.score) {
@@ -154,13 +154,13 @@ class Game {
         if (!found) {
             scores.push(newScore);
         }
-
+      
         if (scores.length > 10) {
             scores.length = 10;
         }
 
-        return scores;
-    }
+    return scores;
+  }
 }
 
 const game = new Game();
@@ -176,3 +176,4 @@ function delay(milliseconds) {
 function loadSound(filename) {
     return new Audio('assets/' + filename);
 }
+  
