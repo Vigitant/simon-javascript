@@ -1,4 +1,4 @@
-function loadScores() {
+/*function loadScores() {
     let scores = [];
     const scoresText = localStorage.getItem('scores');
     if (scoresText) {
@@ -30,6 +30,11 @@ function loadScores() {
     } else {
         tableBodyEl.innerHTML = '<tr><td colSpan=4>Be the first to score</td></tr>';
     }
+}*/
+
+async function loadScores() {
+    const response = await fetch("/api/scores")
+    const scores = await response.json()
 }
 
 loadScores();
